@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
+class ReceiveController extends Controller
+{
+    public function receive(Request $request)
+    {
+        return 'reach';
+    }
+
+}
+
