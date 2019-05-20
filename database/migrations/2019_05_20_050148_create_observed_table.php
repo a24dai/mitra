@@ -15,6 +15,8 @@ class CreateObservedTable extends Migration
     {
         Schema::create('observed', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('mac_address');
+            $table->dateTime('observed_time');
             $table->timestamps();
         });
     }
@@ -29,3 +31,4 @@ class CreateObservedTable extends Migration
         Schema::dropIfExists('observed');
     }
 }
+
