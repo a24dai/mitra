@@ -9,7 +9,10 @@ class ReceiveController extends Controller
 {
     public function receive(Request $request)
     {
-        return 'reach';
+        return [
+            'time' => $request->input('time'),
+            'arp'  => $request->input('arp')
+        ];
     }
 
 }
