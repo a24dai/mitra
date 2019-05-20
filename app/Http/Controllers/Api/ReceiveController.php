@@ -9,9 +9,14 @@ class ReceiveController extends Controller
 {
     public function receive(Request $request)
     {
+        $time = $request->input('time');
+        $arpStr = $request->input('arp');
+
+        $arpArr = explode('\n?', $arpStr);
+
         return [
-            'time' => $request->input('time'),
-            'arp'  => $request->input('arp')
+            'time' => $time,
+            'arp'  => $arpArr,
         ];
     }
 
