@@ -18,24 +18,19 @@ class ReceiveController extends Controller
 
     public function receive(Request $request)
     {
-        $time = $request->input('time');
-        $arpStr = $request->input('arp');
-
-        preg_match_all('/([a-z0-9]+:){5}[a-z0-9]+/', $arpStr, $matchs);
-
-        $addressArr = $this->makeAddressArr($matchs[0], $time);
+        $addressArr = $this->makeAddressArr($request->all(), '2019-08-06 14:10:00');
 
         $this->observed->insert($addressArr);
 
-        return 'completed';
+        return $addressArr;
     }
 
-    private function makeAddressArr($arpArr, $time)
+    private function makeAddressArr($macs, $time)
     {
         $addressArr = [];
-        foreach ($arpArr as $arp) {
+        foreach ($macs as $mac) {
             $addressArr[] = [
-                'mac_address' => $arp,
+                'mac_address' => $mac,
                 'observed_time' => $time,
             ];
         }
