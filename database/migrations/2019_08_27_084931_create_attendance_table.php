@@ -15,6 +15,8 @@ class CreateAttendanceTable extends Migration
     {
         Schema::create('attendance', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->integer('user_id');
+            $table->dateTime('date');
             $table->timestamps();
         });
     }
@@ -29,3 +31,4 @@ class CreateAttendanceTable extends Migration
         Schema::dropIfExists('attendance');
     }
 }
+

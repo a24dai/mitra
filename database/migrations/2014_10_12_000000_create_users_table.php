@@ -17,8 +17,9 @@ class CreateUsersTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('mac_address')->nullable();
-            $table->integer('state')->nullable();
+            $table->integer('status_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
