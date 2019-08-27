@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Observed;
+use Carbon\Carbon;
 
 class ReceiveController extends Controller
 {
@@ -18,7 +19,8 @@ class ReceiveController extends Controller
 
     public function receive(Request $request)
     {
-        $addressArr = $this->makeAddressArr($request->all(), '2019-08-06 14:10:00');
+        $now = new Carbon('now');
+        $addressArr = $this->makeAddressArr($request->all(), $now);
 
         $this->observed->insert($addressArr);
 
