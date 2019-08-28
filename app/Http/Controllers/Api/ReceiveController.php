@@ -26,9 +26,13 @@ class ReceiveController extends Controller
         $macs = $request->all();
         $users = $this->user->pluck('mac_address')->toArray();
 
-        $attendees = array_intersect($macs, $users);
-        $attendanceArr = $this->makeAttendanceArr($attendees);
+        $workingUsers = $this->user->fetchWorkingUsersAddress($this->now->format('Y-m-d'));
+        $workingAttendees = $this->makeWorkingUserArr($workingUsers);
 
+        $attendees = array_intersect($macs, $users);
+        $newAttendees = array_diff($attendees, $workingAttendees);
+
+        $attendanceArr = $this->makeAttendanceArr($newAttendees);
         $this->attendance->insert($attendanceArr);
 
         dd('done');
@@ -41,11 +45,22 @@ class ReceiveController extends Controller
         $attendanceArr = [];
         foreach ($addresses as $address) {
             $attendanceArr[] = [
-                'user_id' => $this->user->fetchUserIdByAddress($address),
+                'user_id'    => $this->user->fetchUserIdByAddress($address),
                 'start_time' => $this->now,
             ];
         }
         return $attendanceArr;
+    }
+
+    private function makeWorkingUserArr($addressArr)
+    {
+        $workingUserArr = [];
+        if (!empty($addressArr)) {
+            foreach ($addressArr as $address) {
+                $workingUserArr[] = $address['mac_address'];
+            }
+        }
+        return $workingUserArr;
     }
 
 }

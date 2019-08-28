@@ -37,6 +37,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function attendance()
+    {
+        return $this->hasMany(Attendance::class);
+    }
+
+    public function status()
+    {
+        return $this->hasOne(Status::class, 'id', 'status_id');
+    }
+
     /**
      * @param string $address
      * @return int
@@ -45,6 +55,13 @@ class User extends Authenticatable
     {
         return $this->where('mac_address', $address)
                     ->first()->id;
+    }
+
+    public function fetchWorkingUsersAddress($today)
+    {
+        return $this->whereHas('attendance', function ($query) use ($today) {
+            $query->whereDate('start_time', $today);
+        })->get('mac_address')->toArray();
     }
 
 }
