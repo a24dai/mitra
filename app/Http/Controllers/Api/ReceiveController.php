@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Observed;
 use App\Models\User;
+use App\Models\Attendance;
 use Carbon\Carbon;
 
 class ReceiveController extends Controller
@@ -13,12 +14,14 @@ class ReceiveController extends Controller
     private $now;
     private $observed;
     private $user;
+    private $attendance;
 
-    public function __construct(Observed $observed, User $user)
+    public function __construct(Observed $observed, User $user, Attendance $attendance)
     {
         $this->now = new Carbon('now');
         $this->observed = $observed;
         $this->user = $user;
+        $this->attendance = $attendance;
     }
 
     public function receive(Request $request)
@@ -32,8 +35,9 @@ class ReceiveController extends Controller
         $attendees = array_intersect($macs, $users);
         $attendanceArr = $this->makeAttendanceArr($attendees);
 
+        $this->attendance->insert($attendanceArr);
 
-        dd($attendanceArr);
+        dd('done');
 
         return $addressArr;
     }
