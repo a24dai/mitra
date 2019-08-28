@@ -10,7 +10,6 @@ use Carbon\Carbon;
 
 class ReceiveController extends Controller
 {
-
     private $now;
     private $observed;
     private $user;
@@ -27,24 +26,40 @@ class ReceiveController extends Controller
         $macs = $request->all();
         $users = $this->user->pluck('mac_address')->toArray();
 
-        $addressArr = $this->makeAddressArr($macs, $now);
+        $addressArr = $this->makeAddressArr($macs);
         $this->observed->insert($addressArr);
 
-        dd(array_intersect($macs, $users));
+        $attendees = array_intersect($macs, $users);
+        $attendanceArr = $this->makeAttendanceArr($attendees);
+
+
+        dd($attendanceArr);
 
         return $addressArr;
     }
 
-    private function makeAddressArr($macs, $time)
+    private function makeAddressArr($macs)
     {
         $addressArr = [];
         foreach ($macs as $mac) {
             $addressArr[] = [
-                'mac_address' => $mac,
-                'observed_time' => $time,
+                'mac_address'   => $mac,
+                'observed_time' => $this->now,
             ];
         }
         return $addressArr;
+    }
+
+    private function makeAttendanceArr($addresses)
+    {
+        $attendanceArr = [];
+        foreach ($addresses as $address) {
+            $attendanceArr[] = [
+                'user_id' => $this->user->fetchUserIdByAddress($address),
+                'start_time' => $this->now,
+            ];
+        }
+        return $attendanceArr;
     }
 
 }

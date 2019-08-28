@@ -36,4 +36,16 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * @param string $address
+     * @return int
+     */
+    public function fetchUserIdByAddress($address)
+    {
+        return $this->where('mac_address', $address)
+                    ->first()->id;
+    }
+
 }
+
