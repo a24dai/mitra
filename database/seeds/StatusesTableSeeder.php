@@ -11,6 +11,18 @@ class StatusesTableSeeder extends Seeder
      */
     public function run()
     {
-        //
+        DB::table('statuses')->truncate();
+        DB::table('statuses')->insert([
+            [
+                'name' => '短期研修生'
+            ],
+            [
+                'name' => '長期研修生'
+            ],
+            [
+                'name' => '新卒'
+            ]
+        ]);
     }
 }
+
