@@ -13,9 +13,16 @@ class UsersTableSeeder extends Seeder
     {
         DB::table('users')->truncate();
         DB::table('users')->insert([
-            'name' => '安藤 大地',
-            'mac_address' => '88:e9:fe:67:96:a7',
-            'state' => 0,
+            [
+                'name' => '金谷翔平',
+                'mac_address' => 'AA:AA:AA:AA:AA:AA',
+                'status_id' => 1
+            ],
+            [
+                'name' => '金谷iPhone',
+                'mac_address' => 'BB:BB:BB:BB:BB:BB',
+                'status_id' => 2
+            ]
         ]);
     }
 
