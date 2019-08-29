@@ -26,12 +26,12 @@ class ReceiveController extends Controller
         $macs = $request->all();
         $users = $this->user->pluck('mac_address')->toArray();
 
-        $workingAttendees = $this->user->fetchWorkingUsersAddress($this->now->format('Y-m-d'));
+        $attendedMacs = $this->user->fetchAttendedUsersAddress($this->now->format('Y-m-d'));
 
-        $attendees = array_intersect($macs, $users);
-        $newAttendees = array_diff($attendees, $workingAttendees);
+        $workingMacs = array_intersect($macs, $users);
+        $newMacs = array_diff($workingMacs, $attendedMacs);
 
-        $attendanceArr = $this->makeAttendanceArr($newAttendees);
+        $attendanceArr = $this->makeAttendanceArr($newMacs);
         $this->attendance->insert($attendanceArr);
 
         dd('done');
@@ -39,13 +39,19 @@ class ReceiveController extends Controller
         return $addressArr;
     }
 
-    private function makeAttendanceArr($addresses)
+    public function sendAttendanceData()
+    {
+        $attendees = $this->user->fetchDailyAttendees($this->now->format('Y-m-d'));
+        dd($attendees);
+    }
+
+    private function makeAttendanceArr($macs)
     {
         $attendanceArr = [];
-        foreach ($addresses as $address) {
+        foreach ($macs as $mac) {
             $attendanceArr[] = [
-                'user_id'    => $this->user->fetchUserIdByAddress($address),
-                'start_time' => $this->now,
+                'user_id'    => $this->user->fetchUserIdByAddress($mac),
+                'start_time' => $this->now
             ];
         }
         return $attendanceArr;

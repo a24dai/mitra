@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -42,6 +43,11 @@ class User extends Authenticatable
         return $this->hasMany(Attendance::class);
     }
 
+    public function dailyAttendance()
+    {
+        return $this->hasOne(Attendance::class, 'user_id')->whereDate('start_time', Carbon::today()->format('Y-m-d'));
+    }
+
     public function status()
     {
         return $this->hasOne(Status::class, 'id', 'status_id');
@@ -57,11 +63,20 @@ class User extends Authenticatable
                     ->first()->id;
     }
 
-    public function fetchWorkingUsersAddress($today)
+    public function fetchAttendedUsersAddress($today)
     {
         return $this->whereHas('attendance', function ($query) use ($today) {
             $query->whereDate('start_time', $today);
         })->pluck('mac_address')->toArray();
+    }
+
+    public function fetchDailyAttendees($today)
+    {
+        return $this->join('attendance', 'users.id', '=', 'attendance.user_id')
+                    ->select('users.name', 'attendance.start_time')
+                    ->whereDate('start_time', $today)
+                    ->oldest('start_time')
+                    ->get();
     }
 
 }

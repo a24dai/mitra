@@ -15,5 +15,6 @@ use Illuminate\Http\Request;
 
 Route::group(['middleware' => ['api']], function(){
     Route::post('receive', 'Api\ReceiveController@receive');
+    Route::post('send', 'Api\ReceiveController@sendAttendanceData');
 });
 
