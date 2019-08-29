@@ -61,7 +61,7 @@ class User extends Authenticatable
     {
         return $this->whereHas('attendance', function ($query) use ($today) {
             $query->whereDate('start_time', $today);
-        })->get('mac_address')->toArray();
+        })->pluck('mac_address')->toArray();
     }
 
 }
