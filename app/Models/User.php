@@ -65,9 +65,11 @@ class User extends Authenticatable
 
     public function fetchAttendedUsersAddress($today)
     {
-        return $this->whereHas('attendance', function ($query) use ($today) {
-            $query->whereDate('start_time', $today);
-        })->pluck('mac_address')->toArray();
+        return $this->join('attendance', 'users.id', '=', 'attendance.user_id')
+                    ->select('users.mac_address')
+                    ->whereDate('start_time', $today)
+                    ->pluck('mac_address')
+                    ->toArray();
     }
 
     public function fetchDailyAttendees($today)
